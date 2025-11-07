@@ -1,6 +1,6 @@
 # enclave-crisp-template
 
-One-liner to auto-install & run (& dev) a `fdevc runnable project` for [Enclave](https://github.com/gnosisguild/enclave) powered by [fdevc](https://github.com/philogicae/fast_dev_container)
+One-liner to auto-install & run (& dev) a `fdevc runnable project` for [Enclave CRISP template](https://github.com/gnosisguild/enclave/tree/main/examples/CRISP) powered by [fdevc](https://github.com/philogicae/fast_dev_container)
 
 [![Curl](https://img.shields.io/badge/curl-required-orange)](https://curl.se/)
 [![Git](https://img.shields.io/badge/git-required-orange)](https://git-scm.com/)
@@ -9,7 +9,7 @@ One-liner to auto-install & run (& dev) a `fdevc runnable project` for [Enclave]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/philogicae/enclave-crisp-template)
 
-> Docs: [Enclave Hello World](https://docs.enclave.gg/CRISP/introduction)
+> Docs: [Enclave CRISP](https://docs.enclave.gg/CRISP/introduction)
 
 ## Quick Install
 

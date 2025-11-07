@@ -38,9 +38,13 @@ log_detail() {
 
 # Configuration variables
 LOCAL_BIN="${HOME}/.local/bin"
+FOUNDRY_BIN="${HOME}/.foundry/bin"
 RISC0_BIN="${HOME}/.risc0/bin"
+FOUNDRY_INSTALL_URL="https://foundry.paradigm.xyz"
 RISC0_INSTALL_URL="https://risczero.com/install"
 ENCLAVE_INSTALL_URL="https://raw.githubusercontent.com/gnosisguild/enclave/main/install"
+ENCLAVE_REPO_URL="https://github.com/gnosisguild/enclave.git"
+CRISP_DIR="/workspace/project/examples/CRISP"
 RETRY_COUNT=3
 RETRY_DELAY=5
 
@@ -76,9 +80,52 @@ setup_path() {
 	# Export PATH for current session
 	export PATH="$LOCAL_BIN:$PATH"
 
+	# Add FOUNDRY_BIN to PATH if exists
+	if [ -d "$FOUNDRY_BIN" ]; then
+		export PATH="$FOUNDRY_BIN:$PATH"
+	fi
+
 	# Add RISC0_BIN to PATH if exists
 	if [ -d "$RISC0_BIN" ]; then
 		export PATH="$RISC0_BIN:$PATH"
+	fi
+
+	SHELL=/bin/bash pnpm setup
+	export PNPM_HOME="/root/.local/share/pnpm"
+	case ":$PATH:" in
+	  *":$PNPM_HOME:"*) ;;
+	  *) export PATH="$PNPM_HOME:$PATH" ;;
+	esac
+	pnpm self-update
+
+	# Install yq for project/examples/CRISP/scripts/dev_cipher.sh
+	apt update
+	apt install yq -y
+}
+
+install_foundry() {
+	if command_exists foundryup; then
+		log_success "Foundry already installed"
+		return 0
+	fi
+
+	log_step "Installing Foundry..."
+	if retry $RETRY_COUNT curl -L "$FOUNDRY_INSTALL_URL" | bash; then
+		# Re-export PATH after installation
+		if [ -d "$FOUNDRY_BIN" ]; then
+			export PATH="$FOUNDRY_BIN:$PATH"
+		fi
+
+		if command_exists foundryup; then
+			foundryup
+			log_success "Foundry installed successfully"
+		else
+			log_error "Foundry installation failed"
+			exit 1
+		fi
+	else
+		log_error "Failed to download Foundry installer"
+		exit 1
 	fi
 }
 
@@ -176,34 +223,33 @@ install_enclave() {
 
 initialize_project() {
 	if [ -f "project/package.json" ]; then
-		log_success "Enclave template project already initialized"
+		log_success "Enclave CRISP template project already initialized"
 		return 0
 	fi
 
-	log_step "Initializing Enclave template project..."
-	if retry $RETRY_COUNT enclave init tmp; then
+	log_step "Initializing Enclave CRISP template project..."
+	if retry $RETRY_COUNT git clone $ENCLAVE_REPO_URL --recurse-submodules tmp; then
 		log_step "Copying files to project directory..."
 		rsync -a --ignore-existing tmp/ project/
 		rm -rf tmp
 		chmod -R 777 project
-		log_success "Enclave template project initialized"
+		log_success "Enclave CRISP template project initialized"
 	else
-		log_error "Failed to initialize Enclave template project"
+		log_error "Failed to initialize Enclave CRISP template project"
 		exit 1
 	fi
 }
 
 prepare_project() {
-	log_step "Compiling Enclave program..."
-	cd project
-	if retry $RETRY_COUNT enclave program compile; then
-		log_success "Enclave program compiled successfully"
-	else
-		log_error "Failed to compile Enclave program"
-		exit 1
-	fi
 	log_step "Ensuring pnpm dependencies are installed..."
+	cd project
+	CI=true pnpm install --frozen-lockfile -s	
+	cd packages/enclave-contracts
 	CI=true pnpm install --frozen-lockfile -s
+	cd $CRISP_DIR
+	pnpm dev:setup
+	CI=true pnpm install --frozen-lockfile -s
+	cd ../..
 	log_step "Ensuring permissions are set correctly..."
 	chmod -R 777 .
 	cd ..
@@ -211,18 +257,19 @@ prepare_project() {
 
 start_project() {
 	log_step "Starting development environment..."
-	cd project
-	pnpm dev:all
+	cd $CRISP_DIR
+	pnpm dev:up
 }
 
 # Main execution
 main() {
-	log_step "Setting up Enclave development environment..."
+	log_step "Setting up Enclave CRISP template development environment..."
 
 	# Setup PATH
 	setup_path
 
 	# Install dependencies
+	install_foundry
 	install_rzup
 	install_risczero_toolchain
 	install_enclave
