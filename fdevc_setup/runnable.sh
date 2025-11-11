@@ -97,10 +97,6 @@ setup_path() {
 	  *) export PATH="$PNPM_HOME:$PATH" ;;
 	esac
 	pnpm self-update
-
-	# Install yq for project/examples/CRISP/scripts/dev_cipher.sh
-	apt update
-	apt install yq -y
 }
 
 install_foundry() {
@@ -228,7 +224,7 @@ initialize_project() {
 	fi
 
 	log_step "Initializing Enclave CRISP template project..."
-	if retry $RETRY_COUNT git clone $ENCLAVE_REPO_URL --recurse-submodules tmp; then
+	if retry $RETRY_COUNT git clone $ENCLAVE_REPO_URL --recurse-submodules tmp -q; then
 		log_step "Copying files to project directory..."
 		rsync -a --ignore-existing tmp/ project/
 		rm -rf tmp
@@ -243,8 +239,6 @@ initialize_project() {
 prepare_project() {
 	log_step "Ensuring pnpm dependencies are installed..."
 	cd project
-	CI=true pnpm install --frozen-lockfile -s	
-	cd packages/enclave-contracts
 	CI=true pnpm install --frozen-lockfile -s
 	cd $CRISP_DIR
 	pnpm dev:setup
@@ -253,6 +247,8 @@ prepare_project() {
 	log_step "Ensuring permissions are set correctly..."
 	chmod -R 777 .
 	cd ..
+	log_step "Applying additional fixes..." # Remove yq & fix wrong ciphernode addresses
+	sed -i 's|CN\([1-3]\)=\$(cat ./enclave.config.yaml \| yq '"'"'.nodes.cn\1.address'"'"')|CN\1=$(grep -A 1 '"'"'cn\1:'"'"' enclave.config.yaml \| grep '"'"'address:'"'"' \| sed '"'"'s/.*address: *"\\([^"]*\\)".*/\\1/'"'"')|g' project/examples/CRISP/scripts/dev_cipher.sh
 }
 
 start_project() {

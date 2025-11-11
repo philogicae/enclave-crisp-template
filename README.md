@@ -11,6 +11,8 @@ One-liner to auto-install & run (& dev) a `fdevc runnable project` for [Enclave 
 
 > Docs: [Enclave CRISP](https://docs.enclave.gg/CRISP/introduction)
 
+> Other template: [enclave-template](https://github.com/philogicae/enclave-template)
+
 ## Quick Install
 
 ```bash
@@ -33,7 +35,7 @@ curl -fsSL https://raw.githubusercontent.com/philogicae/enclave-crisp-template/m
 - **`install_and_run`** - Installation script that ensures `fdevc` is available, clones this repository, and runs `launch.sh`.
 - **`launch.sh`** - Helper script to launch a container using `fdevc` with predefined settings. Edit the configuration variables at the top to customize ports, image, persistence, etc.
 - **`fdevc_setup/runnable.sh`** - The main script that runs inside the container (complete Enclave setup).
-- **`project/`** - The mounted target folder for git cloned project
+- **`project/`** - The mounted target folder for git cloned project (CRISP project at ./examples/CRISP)
 
 ## Usage
 
@@ -65,3 +67,9 @@ Private Key: 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a
 3. Try out Enclave template at [http://localhost:3000](http://localhost:3000) (or any other forwarded port you configured)
 
 4. Open `enclave-crisp-template` in your IDE and start coding!
+
+> Optional: On Frontend, in order to vote on a poll, you must initialize a new E3 round. Open a new Terminal in enclave-crisp-template directory and run:
+
+```bash
+fdevc -d -c "./fdevc_setup/new_e3_round.sh; exit" # Press enter to confirm selection of "Initialize new E3 round"
+```

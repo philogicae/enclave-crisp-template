@@ -13,7 +13,7 @@ IMAGE=""                                # Docker image or Dockerfile path (overr
 SOCKET="true"                           # Mount Docker socket (true/false)
 PERSIST="false"                         # Keep container running on exit (true/false)
 FORCE="false"                           # Force container creation (true/false)
-PORTS="3000 8545"                       # Docker ports (e.g. "8080:80 443")
+PORTS="3000 8545 4000"                  # Docker ports (e.g. "8080:80 443")
 STARTUP_CMD="./fdevc_setup/runnable.sh" # Startup script auto-mounted into /workspace/fdevc_setup
 VOLUMES=( # Additional volumes ("/data:/data" "virtual:/local")
 	"${WORKSPACE_DIR}/fdevc_setup:/workspace/fdevc_setup" # fdevc_setup
@@ -28,26 +28,14 @@ EXCLUDED=( # Excluded volumes ("/workspace/project/node_modules")
 	"/workspace/project/ignition"                                        # Ignition files
 	"/workspace/project/types"                                           # TypeScript files
 	"/workspace/project/client/node_modules"                             # Client node_modules
-	"/workspace/project/crates/wasm/node_modules"                        # WASM node_modules
-	"/workspace/project/crates/wasm/dist"                                # WASM TypeScript build outputs
+	"/workspace/project/crates"                                          # Crates
 	"/workspace/project/examples/CRISP/node_modules"                     # CRISP example node_modules
 	"/workspace/project/examples/CRISP/client/node_modules"              # CRISP client node_modules
+	"/workspace/project/examples/CRISP/lib"                              # CRISP lib
 	"/workspace/project/examples/CRISP/target"                           # CRISP Rust build artifacts
-	"/workspace/project/templates/default/node_modules"                  # Default template node_modules
-	"/workspace/project/templates/default/target"                        # Default template Rust build artifacts
-	"/workspace/project/packages/enclave-config/node_modules"            # enclave-config node_modules
-	"/workspace/project/packages/enclave-contracts/node_modules"         # enclave-contracts node_modules
-	"/workspace/project/packages/enclave-contracts/artifacts"            # Contract build artifacts
-	"/workspace/project/packages/enclave-contracts/cache"                # Contract cache
-	"/workspace/project/packages/enclave-contracts/out"                  # Contract build outputs
-	"/workspace/project/packages/enclave-contracts/broadcast"            # Contract broadcast data
-	"/workspace/project/packages/enclave-contracts/ignition/deployments" # Ignition deployments
-	"/workspace/project/packages/enclave-contracts/types"                # Contract types
-	"/workspace/project/packages/enclave-contracts/dist"                 # Contract TypeScript build outputs
-	"/workspace/project/packages/enclave-react/node_modules"             # enclave-react node_modules
-	"/workspace/project/packages/enclave-react/dist"                     # enclave-react TypeScript build outputs
-	"/workspace/project/packages/enclave-sdk/node_modules"               # enclave-sdk node_modules
-	"/workspace/project/packages/enclave-sdk/dist"                       # enclave-sdk TypeScript build outputs
+	"/workspace/project/examples/CRISP/.enclave"                         # CRISP Enclave
+	"/workspace/project/templates/default"                               # Default template
+	"/workspace/project/packages"                                        # Project packages
 	"/workspace/project/.enclave/caches")                                # Enclave caches
 ##########################################################################################################################
 
