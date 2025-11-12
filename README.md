@@ -68,8 +68,12 @@ Private Key: 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a
 
 4. Open `enclave-crisp-template` in your IDE and start coding!
 
-> Optional: On Frontend, in order to vote on a poll, you must initialize a new E3 round. Open a new Terminal in enclave-crisp-template directory and run:
+5. Optional: On Frontend, in order to vote on a poll, you must initialize a new E3 round.
+
+- Open a new Terminal and run:
 
 ```bash
-fdevc -d -c "./fdevc_setup/new_e3_round.sh; exit" # Press enter to confirm selection of "Initialize new E3 round"
+fdevc fdevc.enclave-crisp-template -d -c "./fdevc_setup/new_e3_round.sh; exit"
 ```
+
+- Then, press Enter to confirm selection of "Initialize new E3 round"

@@ -34,6 +34,7 @@ EXCLUDED=( # Excluded volumes ("/workspace/project/node_modules")
 	"/workspace/project/examples/CRISP/lib"                              # CRISP lib
 	"/workspace/project/examples/CRISP/target"                           # CRISP Rust build artifacts
 	"/workspace/project/examples/CRISP/.enclave"                         # CRISP Enclave
+	"/workspace/project/examples/CRISP/packages"                         # CRISP packages
 	"/workspace/project/templates/default"                               # Default template
 	"/workspace/project/packages"                                        # Project packages
 	"/workspace/project/.enclave/caches")                                # Enclave caches
